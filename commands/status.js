@@ -97,7 +97,7 @@ module.exports = {
             })
 
             embedInfo.addField("Hardware Information",
-                `\`\`\`OS : ${bot_os.distro} ${bot_os.arch}\nCPU : ${bot_cpu.manufacturer} ${bot_cpu.brand}\nMemory : ${bytesToSize(bot_memory.total)}\nStorage : ${bytesToSize(bot_storage[0].size)}\`\`\``
+                `\`\`\`OS : ${bot_os.distro} ${bot_os.arch}\nCPU : ${bot_cpu.manufacturer} ${bot_cpu.brand}\nMemory : ${bytesToSize(bot_memory.total)}\`\`\``
             )
 
             return message.channel.send(embedInfo)
