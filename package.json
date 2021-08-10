@@ -13,6 +13,8 @@
   "dependencies": {
     "discord.js": "12.5.3",
     "dotenv": "^10.0.0",
-    "mongoose": "^5.13.5"
-  }
+    "mongoose": "^5.13.5",
+    "node-osu": "^2.2.1"
+  },
+  "devDependencies": {}
 }

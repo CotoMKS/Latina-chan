@@ -18,6 +18,7 @@ client.on('warn', info => console.warn(info))
 client.on('error', console.error)
 
 require('./events/guildMemberAdd')(client)
+require('./events/guildMemberRemove')(client)
 
 const commandFiles = readdirSync(join(__dirname, "commands")).filter((file) => file.endsWith(".js"));
 for (const file of commandFiles) {
