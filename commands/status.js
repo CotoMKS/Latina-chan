@@ -1,6 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const Discord = require('discord.js')
 const { version } = require("../package.json");
+const si = require('systeminformation');
 
 module.exports = {
     category: "info",
@@ -13,7 +14,16 @@ module.exports = {
             const { guild } = message;
 
             const { name, region, owner } = guild;
-            const icon = guild.iconURL({ format: "png", dynamic: true });
+            let icon;
+
+            if (guild.icon !== null) {
+                icon = guild.icon;
+            } else {
+                let alphabets = name.split('')
+                const placeHolder = `https://via.placeholder.com/512/2C2F33/FFFFFF?text=${alphabets[0]}`
+                console.log(alphabets)
+                icon = placeHolder;
+            }
 
             const totalMember = guild.members.cache.filter((m) => !m.user.bot).size;
             const totalBots = guild.members.cache.filter((m) => m.user.bot).size;
@@ -43,8 +53,6 @@ module.exports = {
 
             message.channel.send(embedInfo);
         } else if (args[0] === "bot") {
-            let PREFIX = process.env.PREFIX;
-
             let commands = message.client.commands.array();
             const commandCount = commands.length;
 
@@ -64,11 +72,35 @@ module.exports = {
                 .addField("Developer", `<@470140778845569034>`, false)
                 .addField("Version", version, true)
                 .addField("Programming Language", "Javascript", true)
-                .addField("This Server's Prefix", `\`${PREFIX}\``, true)
+                .addField("Default Prefix", `\`${process.env.PREFIX}\``, true)
                 .addField("Uptime", `\`\`\`${days}d ${hours}h ${minutes}m ${seconds}s\`\`\``, false)
                 .setFooter(`${process.env.BOT_NAME} by CotoMKS27#9361`);
 
-            message.channel.send(embedInfo);
+            function bytesToSize(bytes) {
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                if (bytes == 0) return '0 Byte';
+                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+                return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+            }
+
+            const bot_cpu = await si.cpu(i => {
+                return i
+            })
+            const bot_memory = await si.mem(i => {
+                return i
+            })
+            const bot_storage = await si.diskLayout(i => {
+                return i[0]
+            })
+            const bot_os = await si.osInfo(i => {
+                return i
+            })
+
+            embedInfo.addField("Hardware Information",
+                `\`\`\`OS : ${bot_os.distro} ${bot_os.arch}\nCPU : ${bot_cpu.manufacturer} ${bot_cpu.brand}\nMemory : ${bytesToSize(bot_memory.total)}\nStorage : ${bytesToSize(bot_storage[0].size)}\`\`\``
+            )
+
+            return message.channel.send(embedInfo)
         } else if (args[0] === "user") {
             const { guild, channel } = message;
 
